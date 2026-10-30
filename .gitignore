@@ -1,0 +1,7 @@
+# Ignore log files
+logs/*.log
+
+# Ignore private keys and secrets
+*.pem
+*.key
+.env
