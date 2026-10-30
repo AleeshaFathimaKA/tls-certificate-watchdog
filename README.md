@@ -1,27 +1,25 @@
+
 # TLS Certificate Expiry Watchdog
 
-A lightweight Bash-based monitoring tool that checks TLS/SSL certificate expiry dates for multiple domains using OpenSSL.
-
-## Project Overview
-
-TLS certificates secure communication between websites and users through HTTPS. Expired certificates can cause browser security warnings and service disruptions.
-
-This project automates certificate expiry monitoring and identifies certificates that are approaching expiration.
+A Bash-based project that monitors SSL/TLS certificates of multiple domains using OpenSSL.
 
 ## Features
 
-- Checks certificates for multiple domains.
-- Retrieves certificate expiry dates using OpenSSL.
-- Calculates the remaining validity in days.
-- Generates alerts based on expiry thresholds.
-- Handles certificate retrieval failures.
-- Records monitoring results in log files.
-- Supports automatic daily execution using Cron.
+- Monitors multiple domains.
+- Checks certificate expiry dates.
+- Calculates remaining days before expiry.
+- Verifies certificate-chain trust.
+- Validates domain hostnames.
+- Identifies expired and invalid certificates.
+- Displays alerts based on expiry dates.
+- Handles certificate errors.
+- Stores results in log files.
+- Runs automatically using Cron.
 
 ## Technologies Used
 
-- Linux (Ubuntu)
-- Bash Shell Scripting
+- Ubuntu Linux
+- Bash Scripting
 - OpenSSL
 - Git and GitHub
 - Cron
@@ -30,50 +28,57 @@ This project automates certificate expiry monitoring and identifies certificates
 
 | Condition | Status |
 |---|---|
-| Expired | EXPIRED |
+| Expired certificate | EXPIRED |
 | 7 days or less | CRITICAL |
-| 8–14 days | WARNING |
-| 15–30 days | NOTICE |
+| 14 days or less | WARNING |
+| 30 days or less | NOTICE |
 | More than 30 days | HEALTHY |
+
+## Certificate Validation
+
+OpenSSL is used to:
+- Check whether the certificate chain is trusted.
+- Verify whether the certificate matches the domain name.
+- Identify certificate verification failures.
 
 ## Project Structure
 
-```text
-tls-certificate-watchdog/
-├── config/
-│   └── domains.txt
-├── scripts/
-│   ├── check
+    tls-certificate-watchdog/
+    ├── config/
+    │   └── domains.txt
+    ├── scripts/
+    │   ├── check_certificates.sh
+    │   └── test_alerts.sh
+    ├── logs/
+    └── README.md
 
+## How to Run
 
-How to Run
+Make the script executable:
 
-1.Clone the repository.
+    chmod +x scripts/check_certificates.sh
 
-2.Add domains to config/domains.txt
+Run the monitoring script:
 
-3.Make the script executable:
+    ./scripts/check_certificates.sh
 
-chmod +x scripts/check_certificates.sh
+## Automated Monitoring
 
-4.Run the monitoring script:
+Cron is configured to run the monitoring script daily at 8:00 AM server time.
 
-./scripts/check_certificates.sh
+## Learning Outcomes
 
-Automated Monitoring
+- Linux command-line operations.
+- Bash scripting and automation.
+- SSL/TLS certificate monitoring.
+- OpenSSL certificate verification.
+- Linux logging and Cron scheduling.
+- Git and GitHub version control.
 
-Cron is configured to execute the monitoring script daily at 8:00 AM server time.
+## Future Improvements
 
-Learning Outcomes
+- Email or AWS SNS notifications.
+- Configurable alert thresholds.
+- Monitoring dashboard.
+- Additional TLS security checks.
 
-This project demonstrates Linux administration, Bash scripting, TLS certificate inspection, error handling, logging, scheduling, and Git version control.
-
-Future Improvements
-
-1.Email or SNS notifications.
-
-2.Certificate chain validation.
-
-3.Monitoring dashboard.
-
-4.Support for configurable alert thresholds.
