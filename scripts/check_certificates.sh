@@ -34,6 +34,18 @@ openssl x509 -noout -enddate 2>/dev/null)
         continue
     fi
 
+verification_output=$(timeout 10 openssl s_client \
+    -connect "$domain:443" \
+    -servername "$domain" \
+    -verify_hostname "$domain" \
+    -verify_return_error \
+    </dev/null 2>&1)
+
+if echo "$verification_output" | grep -qF "Verify return code: 0 (ok)"; then
+    verification_status="VALID"
+else
+    verification_status="INVALID"
+fi
     expiry_date=${expiry_date#notAfter=}
 
     expiry_timestamp=$(date -d "$expiry_date" +%s)
@@ -57,8 +69,8 @@ openssl x509 -noout -enddate 2>/dev/null)
     echo "Expiry date: $expiry_date"
     echo "Days remaining: $remaining_days"
     echo "Status: $status"
-
-    echo "$(date) | $domain | $expiry_date | $remaining_days days | $status" >> "$LOG_FILE"
+echo "Certificate validation: $verification_status"
+   echo "$(date) | $domain | $expiry_date | $remaining_days days | $status | $verification_status" >> "$LOG_FILE"
 
 done < "$DOMAIN_FILE"
 
